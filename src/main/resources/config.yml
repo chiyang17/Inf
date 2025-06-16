@@ -1,0 +1,4 @@
+# WebSocket 服务器设置
+websocket:
+  port: 8887
+  enable: true

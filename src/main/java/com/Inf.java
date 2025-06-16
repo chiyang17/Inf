@@ -1,5 +1,6 @@
 package com;
 
+import com.server.MyWebSocketServer;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -10,6 +11,7 @@ import java.util.List;
 public final class Inf extends JavaPlugin implements Listener {
 
     private static Inf instance;
+    private MyWebSocketServer wsServer;
 
     @Override
     public void onLoad() {
@@ -29,12 +31,15 @@ public final class Inf extends JavaPlugin implements Listener {
         registerCommands();
         // 5. 注册监听器
         registerAListener();
+        // 6. 接入websocket
+        startWebSocketServer();
+
 
     }
 
     @Override
     public void onDisable() {
-
+        stopWebSocketServer();
     }
 
 
@@ -88,5 +93,34 @@ public final class Inf extends JavaPlugin implements Listener {
      */
     public static Inf getInstance() {
         return instance;
+    }
+
+
+    private void startWebSocketServer() {
+        try {
+            // 获取是否启动
+            boolean websocketEnable = getConfig().getBoolean("websocket.enable" , false);
+            if (websocketEnable){
+                // 获取端口
+                int port = getConfig().getInt("websocket.port" ,  8777);
+                wsServer = new MyWebSocketServer(this, port);
+                wsServer.start();
+                getLogger().info("websocket启动中...");
+            }
+        }catch (Exception e){
+            getLogger().severe("启动websocket服务器时发生异常！");
+        }
+    }
+
+    private void stopWebSocketServer() {
+        try {
+            if (wsServer != null) {
+                // 优雅地停止 WebSocket 服务器，超时设为1秒
+                wsServer.stop(1000);
+                getLogger().info("WebSocket 服务器已停止。");
+            }
+        } catch (InterruptedException e) {
+            getLogger().severe("停止 WebSocket 服务器时发生中断异常！");
+        }
     }
 }
