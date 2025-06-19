@@ -40,7 +40,7 @@ public class MyWebSocketServer extends WebSocketServer {
         // 收到来自外部的消息时
         plugin.getLogger().info("收到来自 WebSocket 的消息: " + message);
         if ("backup".equalsIgnoreCase(message.trim())) {
-            plugin.getServer().getScheduler().runTask(plugin, task -> {
+            plugin.getServer().getGlobalRegionScheduler().run(plugin, task -> {
                 try {
                     new BackupManager(
                             Arrays.asList(

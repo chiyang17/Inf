@@ -1,5 +1,6 @@
 package com;
 
+import com.commands.BackupCommand;
 import com.server.MyWebSocketServer;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -76,6 +77,8 @@ public final class Inf extends JavaPlugin implements Listener {
      */
     private void registerCommands() {
         // getCommand("inf").setExecutor(new 类());
+        getServer().getPluginCommand("backup").setExecutor(new BackupCommand(this));
+        // getCommand("backup").setExecutor(new BackupCommand(this));
     }
 
     // 统一设置配置文件方法

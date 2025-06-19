@@ -23,7 +23,7 @@ public class BackupCommand implements CommandExecutor {
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         sender.sendMessage("§e正在异步执行备份，请稍候...");
         
-        plugin.getServer().getScheduler().runTask(plugin, task -> {
+        plugin.getServer().getGlobalRegionScheduler().run(plugin, task -> {
             try {
                 BackupManager backupManager = new BackupManager(
                     Arrays.asList(
