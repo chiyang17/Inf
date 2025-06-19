@@ -1,13 +1,17 @@
 package com.server;
 
 import com.Inf;
+import com.managers.BackupManager;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.java_websocket.WebSocket;
 import org.java_websocket.handshake.ClientHandshake;
 import org.java_websocket.server.WebSocketServer;
 
+import java.io.IOException;
 import java.net.InetSocketAddress;
+import java.nio.file.Paths;
+import java.util.Arrays;
 
 public class MyWebSocketServer extends WebSocketServer {
 
@@ -35,6 +39,25 @@ public class MyWebSocketServer extends WebSocketServer {
     public void onMessage(WebSocket conn, String message) {
         // 收到来自外部的消息时
         plugin.getLogger().info("收到来自 WebSocket 的消息: " + message);
+        if ("backup".equalsIgnoreCase(message.trim())) {
+            plugin.getServer().getScheduler().runTask(plugin, task -> {
+                try {
+                    new BackupManager(
+                            Arrays.asList(
+                                    Paths.get("world"),
+                                    Paths.get("world_nether"),
+                                    Paths.get("world_the_end")
+                            ),
+                            Paths.get("backups")
+                    ).backup();
+
+                    conn.send("✅ WebSocket 触发备份成功");
+                } catch (IOException e) {
+                    conn.send("❌ 备份失败: " + e.getMessage());
+                    e.printStackTrace();
+                }
+            });
+        }
     }
 
     @Override
