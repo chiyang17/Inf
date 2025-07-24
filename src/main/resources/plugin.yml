@@ -4,9 +4,9 @@ main: com.Inf
 api-version: '1.21'
 folia-supported: true
 
-commands:
-  backup:
-    description: "手动备份所有世界"
-    aliases:
-      - backup
-      - bk
+#commands:
+  #backup:
+    #description: "手动备份所有世界"
+    #aliases:
+      #- backup
+      #- bk

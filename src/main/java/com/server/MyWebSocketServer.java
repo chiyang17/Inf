@@ -39,25 +39,7 @@ public class MyWebSocketServer extends WebSocketServer {
     public void onMessage(WebSocket conn, String message) {
         // 收到来自外部的消息时
         plugin.getLogger().info("收到来自 WebSocket 的消息: " + message);
-        if ("backup".equalsIgnoreCase(message.trim())) {
-            plugin.getServer().getGlobalRegionScheduler().run(plugin, task -> {
-                try {
-                    new BackupManager(
-                            Arrays.asList(
-                                    Paths.get("world"),
-                                    Paths.get("world_nether"),
-                                    Paths.get("world_the_end")
-                            ),
-                            Paths.get("backups")
-                    ).backup();
-
-                    conn.send("✅ WebSocket 触发备份成功");
-                } catch (IOException e) {
-                    conn.send("❌ 备份失败: " + e.getMessage());
-                    e.printStackTrace();
-                }
-            });
-        }
+        // 这里可以处理来自外部的消息，比如执行备份等
     }
 
     @Override
@@ -72,4 +54,24 @@ public class MyWebSocketServer extends WebSocketServer {
         // 当服务器成功启动时
         plugin.getLogger().info("WebSocket 服务器已在地址 " + this.getAddress() + " 上启动！");
     }
+
+    /*if ("backup".equalsIgnoreCase(message.trim())) {
+        plugin.getServer().getGlobalRegionScheduler().run(plugin, task -> {
+            try {
+                new BackupManager(
+                        Arrays.asList(
+                                Paths.get("world"),
+                                Paths.get("world_nether"),
+                                Paths.get("world_the_end")
+                        ),
+                        Paths.get("backups")
+                ).backup();
+
+                conn.send("✅ WebSocket 触发备份成功");
+            } catch (IOException e) {
+                conn.send("❌ 备份失败: " + e.getMessage());
+                e.printStackTrace();
+            }
+        });
+    }*/
 }

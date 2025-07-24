@@ -77,7 +77,7 @@ public final class Inf extends JavaPlugin implements Listener {
      */
     private void registerCommands() {
         // getCommand("inf").setExecutor(new 类());
-        getServer().getPluginCommand("backup").setExecutor(new BackupCommand(this));
+        // getServer().getPluginCommand("backup").setExecutor(new BackupCommand(this));
         // getCommand("backup").setExecutor(new BackupCommand(this));
     }
 
