@@ -1,6 +1,7 @@
 package com;
 
 import com.commands.BackupCommand;
+import com.listeners.player.PlayerJoinAndQuitListener;
 import com.server.MyWebSocketServer;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -28,12 +29,12 @@ public final class Inf extends JavaPlugin implements Listener {
         saveDefaultConfig();
         // 3. 保存其他文件
         saveConfig();
-        // 4.注册指令
-        registerCommands();
-        // 5. 注册监听器
-        registerAListener();
-        // 6. 接入websocket
+        // 4. 接入websocket
         startWebSocketServer();
+        // 5.注册指令
+        registerCommands();
+        // 6. 注册监听器
+        registerAListener();
 
 
     }
@@ -50,6 +51,7 @@ public final class Inf extends JavaPlugin implements Listener {
     public void registerAListener() {
         // 添加监听器
         getServer().getPluginManager().registerEvents(this, this);
+        getServer().getPluginManager().registerEvents(new PlayerJoinAndQuitListener(wsServer), this);
         // 其他监听器
         // getServer().getPluginManager().registerEvents(new XXX(), this);
     }
