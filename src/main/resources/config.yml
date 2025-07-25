@@ -2,3 +2,10 @@
 websocket:
   port: 8887
   enable: true
+# 是否开启玩家可输入保存某些命令权限
+allow-player-command:
+  playerdata:
+    save: true
+    load: false
+    list: false
+    reload: false

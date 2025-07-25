@@ -1,6 +1,6 @@
 package com;
 
-import com.commands.BackupCommand;
+import com.commands.PlayerDataCommand;
 import com.listeners.player.PlayerJoinAndQuitListener;
 import com.server.MyWebSocketServer;
 import org.bukkit.event.Listener;
@@ -35,8 +35,6 @@ public final class Inf extends JavaPlugin implements Listener {
         registerCommands();
         // 6. 注册监听器
         registerAListener();
-
-
     }
 
     @Override
@@ -80,7 +78,7 @@ public final class Inf extends JavaPlugin implements Listener {
     private void registerCommands() {
         // getCommand("inf").setExecutor(new 类());
         // getServer().getPluginCommand("backup").setExecutor(new BackupCommand(this));
-        // getCommand("backup").setExecutor(new BackupCommand(this));
+        getServer().getPluginCommand("playerdata").setExecutor(new PlayerDataCommand(this));
     }
 
     // 统一设置配置文件方法

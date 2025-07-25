@@ -4,7 +4,12 @@ main: com.Inf
 api-version: '1.21'
 folia-supported: true
 
-#commands:
+commands:
+  playerdata:
+    description: "玩家数据保存/加载"
+    usage: /playerdata <save|load|list|reload> [player]
+    aliases:
+      - playerdata
   #backup:
     #description: "手动备份所有世界"
     #aliases:
