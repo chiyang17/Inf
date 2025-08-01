@@ -117,7 +117,7 @@ public class PlayerDataCommand implements CommandExecutor {
         }
 
         UUID uuid = player.getUniqueId();
-        File source = new File(plugin.getDataFolder(), "backups/" + uuid + "/" + filename);
+        File source = new File(plugin.getDataFolder(), "backups/" + uuid + "/" + filename + ".dat");
         File target = new File(Bukkit.getWorlds().getFirst().getWorldFolder(), "playerdata/" + uuid + ".dat");
 
         if (!source.exists()) {
@@ -155,7 +155,6 @@ public class PlayerDataCommand implements CommandExecutor {
         }
 
         boolean isPlayer = sender instanceof Player;
-        boolean isAdmin = !isPlayer || sender.isOp();
         String targetName = null;
         UUID targetUUID = null;
 
@@ -206,36 +205,6 @@ public class PlayerDataCommand implements CommandExecutor {
                 sender.sendMessage(" §7- " + filename);
             }
 
-        } else if (isAdmin) {
-            // 管理员查看所有人
-            sender.sendMessage("§a所有玩家的保存记录：");
-            File[] playerDirs = backupRoot.listFiles(File::isDirectory);
-            if (playerDirs == null || playerDirs.length == 0) {
-                sender.sendMessage("§e无任何玩家备份记录");
-                return;
-            }
-
-            for (File dir : playerDirs) {
-                String uuidStr = dir.getName();
-                UUID uuid;
-                try {
-                    uuid = UUID.fromString(uuidStr);
-                } catch (IllegalArgumentException e) {
-                    continue;
-                }
-
-                String name = Bukkit.getOfflinePlayer(uuid).getName();
-                File[] files = dir.listFiles((d, n) -> n.endsWith(".dat"));
-                if (files == null || files.length == 0) continue;
-
-                sender.sendMessage("§b" + (name != null ? name : uuidStr) + "：");
-                for (File f : files) {
-                    String time = f.getName().replace(".dat", "");
-                    sender.sendMessage(" §7- " + time);
-                }
-            }
-        } else {
-            sender.sendMessage("§c你没有权限查看其他玩家的记录");
         }
     }
 
