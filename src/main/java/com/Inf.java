@@ -1,8 +1,8 @@
 package com;
 
-import com.commands.PlayerDataCommand;
 import com.listeners.player.PlayerJoinAndQuitListener;
-import com.server.MyWebSocketServer;
+import com.websocket.MyWebSocketServer;
+import com.websocket.dispatcher.WsStrategyDispatcher;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -14,6 +14,7 @@ public final class Inf extends JavaPlugin implements Listener {
 
     private static Inf instance;
     private MyWebSocketServer wsServer;
+    private WsStrategyDispatcher dispatcher;
 
     @Override
     public void onLoad() {
@@ -78,7 +79,6 @@ public final class Inf extends JavaPlugin implements Listener {
     private void registerCommands() {
         // getCommand("inf").setExecutor(new 类());
         // getServer().getPluginCommand("backup").setExecutor(new BackupCommand(this));
-        getServer().getPluginCommand("playerdata").setExecutor(new PlayerDataCommand(this));
     }
 
     // 统一设置配置文件方法
@@ -106,7 +106,11 @@ public final class Inf extends JavaPlugin implements Listener {
             if (websocketEnable){
                 // 获取端口
                 int port = getConfig().getInt("websocket.port" ,  8777);
-                wsServer = new MyWebSocketServer(this, port);
+
+                // 创建 dispatcher（只创建一次）
+                this.dispatcher = new WsStrategyDispatcher(this);
+
+                wsServer = new MyWebSocketServer(this, port , dispatcher);
                 wsServer.start();
                 getLogger().info("websocket启动中...");
             }

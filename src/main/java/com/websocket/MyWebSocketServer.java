@@ -1,26 +1,25 @@
-package com.server;
+package com.websocket;
 
 import com.Inf;
-import com.managers.BackupManager;
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
+import com.websocket.dispatcher.WsStrategyDispatcher;
+import com.websocket.strategy.WsMessageStrategy;
 import org.java_websocket.WebSocket;
 import org.java_websocket.handshake.ClientHandshake;
 import org.java_websocket.server.WebSocketServer;
+import org.json.JSONObject;
 
-import java.io.IOException;
 import java.net.InetSocketAddress;
-import java.nio.file.Paths;
-import java.util.Arrays;
 
 public class MyWebSocketServer extends WebSocketServer {
 
     // 保存主插件的实例，以便我们访问 Bukkit API 和调度器
     private final Inf plugin;
+    private final WsStrategyDispatcher dispatcher;
 
-    public MyWebSocketServer(Inf plugin, int port) {
+    public MyWebSocketServer(Inf plugin, int port, WsStrategyDispatcher dispatcher) {
         super(new InetSocketAddress(port));
         this.plugin = plugin;
+        this.dispatcher = dispatcher;
     }
 
     @Override
@@ -37,6 +36,27 @@ public class MyWebSocketServer extends WebSocketServer {
 
     @Override
     public void onMessage(WebSocket conn, String message) {
+        // 解析 JSON
+        JSONObject json = new JSONObject(message);
+
+        // 校验 type
+        if (!json.has("type")) {
+            conn.send("消息缺少 type 字段");
+            return;
+        }
+
+        String type = json.getString("type");
+
+        // 获取策略
+        WsMessageStrategy strategy = dispatcher.getStrategy(type);
+        if (strategy == null) {
+            conn.send("未知的消息类型: " + type);
+            return;
+        }
+
+        // 交给策略处理
+        strategy.handle(conn, message);
+
         // 收到来自外部的消息时
         plugin.getLogger().info("收到来自 WebSocket 的消息: " + message);
         // 这里可以处理来自外部的消息，比如执行备份等
@@ -55,23 +75,4 @@ public class MyWebSocketServer extends WebSocketServer {
         plugin.getLogger().info("WebSocket 服务器已在地址 " + this.getAddress() + " 上启动！");
     }
 
-    /*if ("backup".equalsIgnoreCase(message.trim())) {
-        plugin.getServer().getGlobalRegionScheduler().run(plugin, task -> {
-            try {
-                new BackupManager(
-                        Arrays.asList(
-                                Paths.get("world"),
-                                Paths.get("world_nether"),
-                                Paths.get("world_the_end")
-                        ),
-                        Paths.get("backups")
-                ).backup();
-
-                conn.send("✅ WebSocket 触发备份成功");
-            } catch (IOException e) {
-                conn.send("❌ 备份失败: " + e.getMessage());
-                e.printStackTrace();
-            }
-        });
-    }*/
 }

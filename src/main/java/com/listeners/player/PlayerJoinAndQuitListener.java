@@ -1,7 +1,7 @@
 package com.listeners.player;
 
 import com.alibaba.fastjson2.JSONObject;
-import com.server.MyWebSocketServer;
+import com.websocket.MyWebSocketServer;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
